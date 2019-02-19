@@ -37,8 +37,6 @@ extern "C" {
 			string hwaddr_cisco;
 			string hwaddr_windows;
 			handle.getContext("hwaddr", hwaddr);
-			regex colon (":");
-			hwaddr_windows = regex_replace (hwaddr, colon, "-");
 			// There must be a better way to do this...
 			hwaddr_cisco = hwaddr;
 			hwaddr_cisco.replace(hwaddr_cisco.find(":"), 1, "");
@@ -136,7 +134,6 @@ extern "C" {
 
 			// ... and generate a few variants that might be useful
 			options_variables["HWADDR_CISCO"] = hwaddr_cisco;	// 1234.5678.90ab
-			options_variables["HWADDR_WINDOWS"] = hwaddr_windows;	// 12-34-56-78-90-ab
 			options_variables["IPADDR_HEX"] = ipaddr_hex;		// c39f0a01
 
 			// Debug
@@ -203,9 +200,9 @@ extern "C" {
 
 			for ( const auto &opt_i : options_initial ) {
 					for ( const auto &sub_i : options_initial[opt_i.first]) {
-							string init_value = sub_i.second;
-				LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_BUF_SND).arg("Resetting opt " + to_string(opt_i.first) + " sub " + to_string(sub_i.first) + " to " + init_value);
-							add4Option(response4_ptr, opt_i.first, sub_i.first, init_value);
+						string init_value = sub_i.second;
+						LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_BUF_SND).arg("Resetting opt " + to_string(opt_i.first) + " sub " + to_string(sub_i.first) + " to " + init_value);
+						add4Option(response4_ptr, opt_i.first, sub_i.first, init_value);
 					}
 			}
 		} catch (const NoSuchCalloutContext&) {
@@ -311,13 +308,6 @@ extern "C" {
 					option_data += strtoul(token.c_str(), NULL, 16);
 				}
 			}
-		}
-
-		if (sanitize > 0) {
-			// Sanitize the string if needed
-			LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Sanitizing data: " + option_data);
-			regex sanitize ("[^A-z0-9-]");
-			option_data = regex_replace (option_data, sanitize, "_");
 		}
 
 		LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Returning data: " + option_data);

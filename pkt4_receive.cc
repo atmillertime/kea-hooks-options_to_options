@@ -59,19 +59,37 @@ extern "C" {
 		LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_RCV).arg("Found vendor_class_id " + vendor_class_id);
 		handle.setContext("vendor_class_id", vendor_class_id);
 
-		// Get class_id from query
+		// Get serialnumber from query
 		string serialnumber;
 		OptionPtr option43 = query4_ptr->getOption(43);
 		if (option43) {
 			OptionPtr SubPtr = option43->getOption(4);
 			if (SubPtr) {
 				serialnumber = SubPtr->toString();
+
+				// Decode :-separated string of ascii-codes
+				// TODO: Find a better way to do this...
+				if (serialnumber.find("type=") == 0) {
+					LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-1: " + serialnumber);
+					serialnumber = serialnumber.substr(19,  string::npos);
+					LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-2: " + serialnumber);
+					if (serialnumber.find(":") != string::npos) {
+						stringstream ss(serialnumber);
+						string token;
+						serialnumber = "";
+						while(getline(ss, token, ':')) {
+							LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Token: " + token);
+							serialnumber += strtoul(token.c_str(), NULL, 16);
+						}
+					}
+				}
+
 			}
 		}
 
 		LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_RCV).arg("Found serial " + serialnumber);
 		handle.setContext("serialnumber", serialnumber);
 
-	    return (0);
+		return (0);
 	};
 }
