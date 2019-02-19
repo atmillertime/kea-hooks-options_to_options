@@ -26,7 +26,7 @@ The config below will take the string from sub option 002 in an option 82 reques
 	},
 
 (...)
-  
+
 	"option-data": [
 	{
 		"name": "boot-file-name",
@@ -90,13 +90,13 @@ This might sound like a strange thing to do, but it allows you to greatly simpli
 
 
 ## Build
-install kea-devel boost-devel gcc-c++ packages
+install kea-devel boost-devel gcc-c++ (>= 4.9) packages
 
 Then run
 ```
 $ libtoolize
 $ aclocal
-$ autoconf 
+$ autoconf
 $ automake --add-missing
 $ ./configure
 $ make

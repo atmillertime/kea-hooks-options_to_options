@@ -119,12 +119,13 @@ extern "C" {
 				}
 			}
 
-
 			// Also get some other variables
 			// Note that all values here are strings so some might have to be casted
 			options_variables["HOSTNAME"] = hostname;
 			options_variables["HWADDR"] = hwaddr;
 			options_variables["IPADDR"] = ipaddr;
+			options_variables["VENDOR_CLASS_ID"] = vendor_class_id;
+			options_variables["SERIALNUMBER"] = serialnumber;
 
 			if (!giaddr.empty()) {
 				string giaddress;
@@ -137,8 +138,6 @@ extern "C" {
 			options_variables["HWADDR_CISCO"] = hwaddr_cisco;	// 1234.5678.90ab
 			options_variables["HWADDR_WINDOWS"] = hwaddr_windows;	// 12-34-56-78-90-ab
 			options_variables["IPADDR_HEX"] = ipaddr_hex;		// c39f0a01
-
-			options_variables["VENDOR_CLASS_ID"] = vendor_class_id;
 
 			// Debug
 			LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("All defined options and variables:");
@@ -210,7 +209,7 @@ extern "C" {
 					}
 			}
 		} catch (const NoSuchCalloutContext&) {
-		LOG_ERROR(options_to_options_logger, OPTIONS_TO_OPTIONS_BUF_SND).arg("No Callout");
+			LOG_ERROR(options_to_options_logger, OPTIONS_TO_OPTIONS_BUF_SND).arg("No Callout");
 		}
 		return (0);
 	}
@@ -280,6 +279,7 @@ extern "C" {
 	string get4Option(Pkt4Ptr& response4_ptr, uint8_t opt_code, uint8_t sub_code, bool sanitize) {
 		LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Getting option " + to_string(opt_code) + "." + to_string(sub_code));
 		string option_data;
+
 		if (sub_code > 0) {
 			OptionPtr opt_ptr = response4_ptr->getOption(opt_code);
 			if (opt_ptr) {
@@ -298,7 +298,7 @@ extern "C" {
 
 		// Decode :-separated string of ascii-codes
 		// TODO: Find a better way to do this...
-			if (option_data.find("type=") == 0) {
+		if (option_data.find("type=") == 0) {
 			LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-1: " + option_data);
 			option_data = option_data.substr(19,  string::npos);
 			LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-2: " + option_data);
@@ -316,9 +316,10 @@ extern "C" {
 		if (sanitize > 0) {
 			// Sanitize the string if needed
 			LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Sanitizing data: " + option_data);
-				regex sanitize ("[^A-z0-9-]");
+			regex sanitize ("[^A-z0-9-]");
 			option_data = regex_replace (option_data, sanitize, "_");
 		}
+
 		LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Returning data: " + option_data);
 		// Return it
 		return option_data;
