@@ -82,6 +82,7 @@ The following placeholders or "variables" are currently defined
 * @OPTION_82_1@ = Value of sub option 1 in Option 82 ("Agent Circuit ID") (sanitized): <em>Router01_ge-0_0_4_1</em>
 * @OPTION_82_2@ = Value of sub option 2 in Option 82 ("Agent Remote ID") (sanitized): <em>customer-id-100000</em>
 * @OPTION_82_6@ = Value of sub option 6 in Option 82 ("Subscriber-ID") (sanitized): <em>customer-id-100000</em>
+* @SERIALNUMBER@ = Value of sub option 4 in Option 43 ("Serial-Number"): <em>6405500317000047</em>
 
 ### Note about giaddr
 The hook also supports a special case where you can automatically insert the "giaddr" as default router in the DHCP-reply.  Simply set Option 3 ("routers") to "0.0.0.0" in the kea-config, and that value will be replaced by the data from "giaddr" in the request (if it is set).
