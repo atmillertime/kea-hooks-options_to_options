@@ -102,7 +102,7 @@ $ automake --add-missing
 $ ./configure
 $ make
 
-# cp .lib/options_to_options.so /path/to/kea/plugins/
+# cp .libs/options_to_options.so /path/to/kea/plugins/
 ```
 
 
