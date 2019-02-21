@@ -91,10 +91,6 @@ extern "C" {
 			// These are the options that will be scanned for "variables" or "placeholders". Just add all _potential_ options here, as nothing is done if the placceholder is not present.
 			// You can use the pre defined option names
 			// Also notice that options without sub options will use sub option id = 0.
-			options_out[43][1] = 1;
-			options_out[43][2] = 1;
-			options_out[43][3] = 1;
-			options_out[43][4] = 1;
 			// TODO: Add more options we can write to (hostname, others?)
 			options_out[DHO_BOOT_FILE_NAME][0] = 1;
 			options_out[DHO_ROUTERS][0] = 1;
@@ -169,7 +165,7 @@ extern "C" {
 						string var = PRE_POST_FIX + ov.first + PRE_POST_FIX;
 						string res = ov.second;
 						LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Searching for " + var + " in " + option_data);
-							if (option_data.find(var) != std::string::npos) {
+						if (option_data.find(var) != std::string::npos) {
 							LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Replace " + var + " with " + res + " in option " + option_data);
 							// If the placeholder is present in the option-data, we replace it with the correct value
 							replace4Option(response4_ptr, opt_code, sub_code, option_data, var, res);
@@ -183,34 +179,6 @@ extern "C" {
 		}
 		return (0);
 	}
-
-
-	// This callout is called at the "buffer4_send" hook.
-	int buffer4_send(CalloutHandle& handle) {
-		LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_INIT_HOOK).arg("buffer4_send");
-		try {
-			// The only purpose of this hook is to reset the original "reply" back to its initial state
-			// to get ready to process the next request
-			Pkt4Ptr response4_ptr;
-			handle.getArgument("response4", response4_ptr);
-
-			map<int,map<int,string>> options_initial;
-
-			handle.getContext("options_initial", options_initial);
-
-			for ( const auto &opt_i : options_initial ) {
-					for ( const auto &sub_i : options_initial[opt_i.first]) {
-						string init_value = sub_i.second;
-						LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_BUF_SND).arg("Resetting opt " + to_string(opt_i.first) + " sub " + to_string(sub_i.first) + " to " + init_value);
-						add4Option(response4_ptr, opt_i.first, sub_i.first, init_value);
-					}
-			}
-		} catch (const NoSuchCalloutContext&) {
-			LOG_ERROR(options_to_options_logger, OPTIONS_TO_OPTIONS_BUF_SND).arg("No Callout");
-		}
-		return (0);
-	}
-
 
 	/// @brief Replace a placeholder in an option before adding it to the outgoing packet
 	///
