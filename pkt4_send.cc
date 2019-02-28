@@ -250,31 +250,14 @@ extern "C" {
 			if (opt_ptr) {
 				OptionPtr sub_ptr = opt_ptr->getOption(sub_code);
 				if (sub_ptr) {
-					option_data = sub_ptr->toString();
+					option_data = toText(sub_ptr->toBinary(false));
 				}
 			}
 		}
 		else {
 			OptionPtr opt_ptr = response4_ptr->getOption(opt_code);
 			if (opt_ptr) {
-				option_data = opt_ptr->toString();
-			}
-		}
-
-		// Decode :-separated string of ascii-codes
-		// TODO: Find a better way to do this...
-		if (option_data.find("type=") == 0) {
-			LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-1: " + option_data);
-			option_data = option_data.substr(19,  string::npos);
-			LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-2: " + option_data);
-			if (option_data.find(":") != string::npos) {
-				stringstream ss(option_data);
-				string token;
-				option_data = "";
-				while(getline(ss, token, ':')) {
-					LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Token: " + token);
-					option_data += strtoul(token.c_str(), NULL, 16);
-				}
+				option_data = toText(opt_ptr->toBinary(false));
 			}
 		}
 

@@ -65,25 +65,7 @@ extern "C" {
 		if (option43) {
 			OptionPtr SubPtr = option43->getOption(4);
 			if (SubPtr) {
-				serialnumber = SubPtr->toString();
-
-				// Decode :-separated string of ascii-codes
-				// TODO: Find a better way to do this...
-				if (serialnumber.find("type=") == 0) {
-					LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-1: " + serialnumber);
-					serialnumber = serialnumber.substr(19,  string::npos);
-					LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Decoding data-2: " + serialnumber);
-					if (serialnumber.find(":") != string::npos) {
-						stringstream ss(serialnumber);
-						string token;
-						serialnumber = "";
-						while(getline(ss, token, ':')) {
-							LOG_DEBUG(options_to_options_logger, MIN_DEBUG_LEVEL, OPTIONS_TO_OPTIONS_PKT_SND).arg("Token: " + token);
-							serialnumber += strtoul(token.c_str(), NULL, 16);
-						}
-					}
-				}
-
+				serialnumber = toText(SubPtr->toBinary(false));
 			}
 		}
 
