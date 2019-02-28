@@ -12,7 +12,7 @@ ACLOCAL_AMFLAGS = -I m4
 # https://svn.boost.org/trac/boost/ticket/3477
 # But older GCC compilers don't have the flag.
 AM_CXXFLAGS += $(WARNING_NO_MISSING_FIELD_INITIALIZERS_CFLAG)
-AM_CXXFLAGS += -std=c++11 
+AM_CXXFLAGS += -std=c++11
 
 # Define rule to build logging source files from message file
 options_to_options_messages.h options_to_options_messages.cc: s-messages
@@ -41,16 +41,9 @@ libduc_la_SOURCES  =
 libduc_la_SOURCES += load_unload.cc
 libduc_la_SOURCES += pkt4_receive.cc
 libduc_la_SOURCES += pkt4_send.cc
-libduc_la_SOURCES += options_to_options.h
+libduc_la_SOURCES += options_to_options.h options_to_options.cc
 libduc_la_SOURCES += options_to_options_log.cc options_to_options_log.h
 
-# libduc_la_SOURCES += subnet_select_co.cc
-# libduc_la_SOURCES += user.cc user.h
-# libduc_la_SOURCES += user_chk.h
-# libduc_la_SOURCES += user_chk_log.cc user_chk_log.h
-# libduc_la_SOURCES += user_data_source.h
-# libduc_la_SOURCES += user_file.cc user_file.h
-# libduc_la_SOURCES += user_registry.cc user_registry.h
 libduc_la_SOURCES += version.cc
 
 nodist_libduc_la_SOURCES = options_to_options_messages.h options_to_options_messages.cc
